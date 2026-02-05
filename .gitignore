@@ -1,0 +1,83 @@
+# Data and artifacts
+data/
+logs/
+outputs/
+reports/
+
+# Models
+*.pkl
+*.joblib
+distilbert_misinformation_classifier/
+baseline_model.pkl
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+*/.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Notebooks
+.notebook_checkpoints/
+.ipynb_checkpoints/
+
+# CSV outputs from notebooks
+feature_importance_baseline.csv
+error_analysis_baseline.csv
+baseline_metrics_summary.csv
+baseline_model.pkl
+distilbert_metrics.json
+
+# Spark
+metastore_db/
+warehouse/
+spark-warehouse/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large files (if ever committed)
+*.tar.gz
+*.tar.bz2
+*.zip
+
+# Cache
+*.cache
+.cache/

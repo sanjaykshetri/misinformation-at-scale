@@ -1,0 +1,112 @@
+# Misinformation at Scale - Configuration
+
+# Data Paths
+data:
+  raw_dir: "./data/raw"
+  processed_dir: "./data/processed"
+  input_file: "reddit_comments.ndjson.gz"
+
+# Ingestion Configuration
+ingestion:
+  # Subreddits to include in analysis
+  # Misinformation-associated communities
+  misinformation_subreddits:
+    - conspiracy
+    - theDonald
+    - NoNewNormal
+    - HillaryForPrison
+    
+  # Control communities (science, neutral discussion)
+  control_subreddits:
+    - science
+    - askscience
+    - ELI5
+    - news
+  
+  # Time window for analysis
+  time_window:
+    start_date: "2020-01-01"
+    end_date: "2020-12-31"
+  
+  # Spark configuration
+  spark:
+    driver_memory: "4g"
+    executor_memory: "8g"
+    num_partitions: 100
+
+# Data Cleaning
+cleaning:
+  # Remove comments shorter than this (characters)
+  min_comment_length: 5
+  
+  # Remove comments longer than this (characters)
+  max_comment_length: 5000
+  
+  # Remove comments with fewer than this score
+  min_score: -5
+  
+  # Remove deleted/removed comments
+  remove_deleted: true
+  
+  # Remove duplicates
+  remove_duplicates: true
+
+# Feature Engineering
+features:
+  # Text preprocessing
+  lowercase: true
+  remove_urls: true
+  remove_special_chars: false  # Keep for sentiment analysis
+  remove_stopwords: false  # Keep for context
+  
+  # N-gram features
+  ngrams:
+    unigrams: true
+    bigrams: true
+    trigrams: false
+
+# Modeling Configuration
+modeling:
+  # Train/val/test split
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  
+  # Random seed for reproducibility
+  random_seed: 42
+  
+  # Baseline models
+  baseline:
+    vectorizer: "tfidf"
+    min_df: 5
+    max_df: 0.8
+    max_features: 5000
+  
+  # Deep learning
+  deep_learning:
+    model_name: "distilbert-base-uncased"
+    max_length: 512
+    batch_size: 32
+    num_epochs: 3
+    learning_rate: 2e-5
+    device: "cuda"  # Set to "cpu" if no GPU
+
+# Evaluation
+evaluation:
+  # Metrics to compute
+  metrics:
+    - accuracy
+    - precision
+    - recall
+    - f1
+    - auc_roc
+    - confusion_matrix
+  
+  # Report file path
+  report_path: "./reports/"
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "./logs/pipeline.log"
