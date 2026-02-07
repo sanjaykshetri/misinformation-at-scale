@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Classifier - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header a {
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        
+        .header a:hover {
+            text-decoration: underline;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 150px;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .results {
+            display: none;
+            margin-top: 40px;
+        }
+        
+        .results.active {
+            display: block;
+        }
+        
+        .prediction {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .prediction-card {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .prediction-label {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .prediction-label.factual {
+            background: #51cf66;
+        }
+        
+        .prediction-label.misinfo {
+            background: #ff6b6b;
+        }
+        
+        .metric {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .features {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .feature-score {
+            background: #ddd;
+            height: 20px;
+            border-radius: 4px;
+            width: 200px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+        
+        .feature-score-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        
+        .feature-value {
+            width: 50px;
+            text-align: right;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #ffe0e0;
+            color: #d32f2f;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .error.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .prediction {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-score {
+                width: 100px;
+            }
+            
+            .feature-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/">← Back to Dashboard</a>
+            <h1 style="color: white; margin-top: 10px;">🎯 Interactive Text Classifier</h1>
+        </div>
+        
+        <div class="card">
+            <form id="classifyForm">
+                <div class="form-group">
+                    <label for="textInput">Enter Text to Classify:</label>
+                    <textarea id="textInput" placeholder="Paste or type your text here..." required></textarea>
+                </div>
+                
+                <button type="submit" class="btn">🚀 Classify Text</button>
+            </form>
+            
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 20px; color: #666;">Analyzing text...</p>
+            </div>
+            
+            <div id="error" class="error"></div>
+            
+            <div id="results" class="results">
+                <h2>Classification Results</h2>
+                
+                <div class="prediction">
+                    <div>
+                        <div id="predictionLabel" class="prediction-label factual">✅ FACTUAL</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Confidence</div>
+                        <div id="confidence" class="metric-value">--</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Uncertainty</div>
+                        <div id="uncertainty" class="metric-value">--</div>
+                    </div>
+                </div>
+                
+                <h2>Top Predictive Features</h2>
+                <div id="features" class="features"></div>
+                
+                <h2>Text Statistics</h2>
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Words</div>
+                        <div id="wordCount" class="stat-value">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Characters</div>
+                        <div id="charCount" class="stat-value">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Sentences</div>
+                        <div id="sentenceCount" class="stat-value">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Avg Word Length</div>
+                        <div id="avgWordLength" class="stat-value">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const form = document.getElementById('classifyForm');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const errorDiv = document.getElementById('error');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const text = document.getElementById('textInput').value.trim();
+            
+            if (!text) {
+                showError('Please enter some text');
+                return;
+            }
+            
+            // Show loading
+            loading.classList.add('active');
+            results.classList.remove('active');
+            errorDiv.classList.remove('active');
+            
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({text})
+                });
+                
+                if (!response.ok) throw new Error('Prediction failed');
+                
+                const data = await response.json();
+                
+                // Update prediction
+                document.getElementById('predictionLabel').textContent = 
+                    (data.is_misinformation ? '⚠️ MISINFORMATION' : '✅ FACTUAL');
+                document.getElementById('predictionLabel').className = 
+                    'prediction-label ' + (data.is_misinformation ? 'misinfo' : 'factual');
+                
+                document.getElementById('confidence').textContent = 
+                    (data.confidence * 100).toFixed(1) + '%';
+                document.getElementById('uncertainty').textContent = 
+                    ((1 - data.confidence) * 100).toFixed(1) + '%';
+                
+                // Update features
+                const featuresHtml = data.features.map(f => `
+                    <div class="feature-item">
+                        <span class="feature-name">${f.name}</span>
+                        <div class="feature-score">
+                            <div class="feature-score-bar" style="width: ${f.score * 100}%"></div>
+                        </div>
+                        <span class="feature-value">${(f.score * 100).toFixed(0)}%</span>
+                    </div>
+                `).join('');
+                document.getElementById('features').innerHTML = featuresHtml;
+                
+                // Update stats
+                document.getElementById('wordCount').textContent = data.stats.word_count;
+                document.getElementById('charCount').textContent = data.stats.char_count;
+                document.getElementById('sentenceCount').textContent = data.stats.sentence_count;
+                document.getElementById('avgWordLength').textContent = 
+                    data.stats.avg_word_length.toFixed(1);
+                
+                results.classList.add('active');
+                
+            } catch (error) {
+                showError('Error during classification: ' + error.message);
+            } finally {
+                loading.classList.remove('active');
+            }
+        });
+        
+        function showError(msg) {
+            errorDiv.textContent = '❌ ' + msg;
+            errorDiv.classList.add('active');
+        }
+    </script>
+</body>
+</html>
