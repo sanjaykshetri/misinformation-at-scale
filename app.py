@@ -1,24 +1,19 @@
 """
 Misinformation Classification Dashboard
 Interactive web app for testing the trained model
+
+To run:
+    streamlit run app.py
+
+To deploy:
+    - Streamlit Cloud: git push to GitHub, connect via https://share.streamlit.io
+    - Docker: docker build . && docker run -p 8501:8501 misinformation-dashboard
+    - Manual server: streamlit run app.py --server.port=8501
 """
 
 import streamlit as st
 import pandas as pd
 import numpy as np
-import os
-import sys
-from pathlib import Path
-import pickle
-import joblib
-
-# Add src to path
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root / 'src'))
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import Pipeline
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -57,16 +52,18 @@ st.markdown("**Testing model robustness to adversarial examples and perturbation
 
 @st.cache_resource
 def load_model():
-    """Load trained TF-IDF vectorizer and Logistic Regression model"""
-    try:
-        # Try to load from checkpoint
-        model_path = project_root / "models"
-        
-        # Since we don't have saved models yet, we'll create a dummy one
-        # In real deployment, load actual trained model
-        return None, None
-    except:
-        return None, None
+    """
+    Load trained TF-IDF vectorizer and Logistic Regression model
+    
+    In production, load from: models/tfidf_vectorizer.pkl & models/logistic_model.pkl
+    For demo purposes, returns None (using mock predictions)
+    """
+    # TODO: When models are saved, uncomment below:
+    # import joblib
+    # tfidf = joblib.load('models/tfidf_vectorizer.pkl')
+    # lr = joblib.load('models/logistic_model.pkl')
+    # return tfidf, lr
+    return None, None
 
 vectorizer, model = load_model()
 
