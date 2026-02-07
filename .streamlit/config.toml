@@ -24,3 +24,8 @@ gatherUsageStats = false
 
 [client]
 showErrorDetails = true
+
+# Python version for cloud deployment
+[python]
+version = "3.11"
+
