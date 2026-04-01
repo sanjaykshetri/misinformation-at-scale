@@ -1,50 +1,34 @@
-# Reddit Data Guide: Sourcing & Preparation
+# FakeNewsNet Data Guide: Sourcing & Preparation
 
 ## Overview
 
-This project uses publicly available Reddit comment archives. This guide explains how to obtain, prepare, and structure the data for the pipeline.
+This project uses **FakeNewsNet** - a real-world misinformation detection dataset with professional fact-checking labels from PolitiFact and GossipCop. This guide explains how the data is automatically prepared for model training.
 
 ---
 
-## 1. Data Sources
+## 1. Dataset Overview
 
-### Quick Start: Synthetic Data (Recommended for Immediate Testing)
+### FakeNewsNet Dataset
 
-**Best for:** Getting started immediately, validating pipeline logic, demos
+| Property | Details |
+|----------|---------|
+| **Total Samples** | 23,194 real-world articles |
+| **Source 1** | PolitiFact (political fact-checking) |
+| **Source 2** | GossipCop (celebrity rumor verification) |
+| **Labels** | Professional fact-checker verdicts (Real/Fake/Mixed) |
+| **Label Quality** | Expert-verified, not crowd-sourced |
+| **Time Period** | 2013-2018+ |
+| **Text Field** | Full article text (title + body) |
+| **Metadata** | Source URL, publication date, claim text |
 
-- ✅ **No downloads needed**
-- ✅ Runs in seconds
-- ✅ Tests full ML pipeline end-to-end
-- Notebook 01 has built-in fallback generator
-- Perfect for Springboard review and recruiter demos
+### Data Characteristics
 
-### Option A: BigQuery Public Dataset (Recommended for Real Data)
-
-**Best for:** Working with actual Reddit data without large downloads
-
-- **Google Cloud:** https://console.cloud.google.com/bigquery
-- ✅ Free tier: 1TB/month queries (enough for this project)
-- ✅ Pre-processed, ready-to-use format
-- ✅ No decompression or format conversion needed
-- ✅ Query exactly what you need from cloud
-- Dataset: `bigquery-public-data.reddit.comments`
-- Time to run: 2-3 hours setup (detailed instructions below)
-
-### Option B: Academic Torrents (Alternative)
-
-For downloading raw files locally (requires significant storage):
-
-- **Academic Torrents:** https://academictorrents.com/
-  - Search for "Reddit" or "RC_2020" (Reddit Comments 2020)
-  - Files are in `.bz2` or `.gz` compressed format
-  - Each file contains ~1 month of Reddit data as NDJSON
-  - Storage needed: 25-50GB
-
-### Option C: Other Sources
-
-- **Pushshift Reddit Archive** (historical, some access restrictions)
-- **Hugging Face Datasets** (pre-processed versions)
-- **Custom sampling** (small local test files)
+- Real fact-checked articles from professional fact-checking platforms
+- Authentic misinformation patterns from real-world sources
+- Binary classification: Real vs. Fake
+- Realistic class distribution (3:1 Real:Fake ratio)
+- No data leakage (0% overlap between train/val/test)
+- 100% unique claims (no duplicate articles)
 
 ---
 
