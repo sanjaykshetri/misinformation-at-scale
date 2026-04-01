@@ -301,7 +301,7 @@ try:
     
     test_predictions = np.array(test_predictions)
     test_probabilities = np.array(test_probabilities)
-    y_test_np = y_test.numpy()
+    y_test_np = y_test.to_numpy() if hasattr(y_test, 'to_numpy') else np.array(y_test)
     
     dl_results = {
         'model': 'DistilBERT (Fine-tuned)',
