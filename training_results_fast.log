@@ -1,0 +1,55 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+================================================================================
+FAST TRAINING PIPELINE - FAKENEWSNET DATASET
+================================================================================
+
+================================================================================
+PART 1: BASELINE MODEL (Logistic Regression + TF-IDF)
+================================================================================
+
+[1/4] Loading FakeNewsNet datasets...
+✓ Loaded: Train=16,235, Val=3,479, Test=3,480
+
+[2/4] TF-IDF vectorization...
+✓ Done (0.5s) | Shape: (16235, 5000)
+
+[3/4] Training Logistic Regression...
+✓ Trained (0.1s)
+
+[4/4] Evaluating baseline model...
+
+✓ BASELINE RESULTS:
+  Train Acc: 86.10% | Val Acc: 83.50%
+  Test Acc:  84.28% | AUC: 0.8772
+  Precision: 81.60% | Recall: 47.28%
+  F1 Score:  0.5987
+  Train-Val Gap: 0.0260 ✓
+✓ Model saved to models/baseline_lr_model.pkl
+
+================================================================================
+PART 2: DEEP LEARNING (DistilBERT - Fast Proof-of-Concept)
+================================================================================
+
+✓ PyTorch: 2.11.0+cu130 | CUDA: False
+
+[1/5] Loading tokenizer...
+✓ Tokenizer loaded
+
+[2/5] Creating datasets...
+✓ Train: 5000 samples in 157 batches
+✓ Test: 3480 samples in 109 batches
+
+[3/5] Initializing model...
+Loading weights:   0%|          | 0/100 [00:00<?, ?it/s]Loading weights:  63%|██████▎   | 63/100 [00:00<00:00, 610.96it/s]Loading weights: 100%|██████████| 100/100 [00:00<00:00, 654.12it/s]
+[1mDistilBertModel LOAD REPORT[0m from: distilbert-base-uncased
+Key                     | Status     |  | 
+------------------------+------------+--+-
+vocab_layer_norm.bias   | UNEXPECTED |  | 
+vocab_transform.weight  | UNEXPECTED |  | 
+vocab_transform.bias    | UNEXPECTED |  | 
+vocab_layer_norm.weight | UNEXPECTED |  | 
+vocab_projector.bias    | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
